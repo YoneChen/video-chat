@@ -14,10 +14,12 @@ class Page {
         const { btn_call, video_local } = this.UI;
         try {
             this.stream = await this.getMediaStream();
-            const url = URL.createObjectURL(this.stream);
-            video_local.src = url;
+            video_local.srcObject = this.stream;
         } catch(err) {
             console.error(err);
+            if(!this.stream) return;
+            const url = URL.createObjectURL(this.stream);
+            video_local.src = url;
         }
     }
     bindEvent() {
