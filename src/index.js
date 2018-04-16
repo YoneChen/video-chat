@@ -42,10 +42,13 @@ class Page {
         const title = document.createElement('span');
         title.innerText = token;
         title.classList.add('title');
+
         const video = document.createElement('video');
         video.classList.add('video');
         video.autoplay = true;
         video.src = source;
+        video.setAttribute('playsinline', true);
+        video.setAttribute('controls', true);
         box.id = token;
         box.appendChild(title);
         box.appendChild(video);
