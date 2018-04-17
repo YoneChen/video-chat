@@ -1,11 +1,11 @@
 import 'webrtc-adapter'
+const WS_URL = 'ws://127.0.0.1:8084';
 class Page {
     constructor() {
         this.UI = {
             group: document.querySelector('.group'),
             btn_call: document.getElementById('btn-call'),
-            video_local: document.getElementById('video-local'),
-            // video_remote: document.getElementById('video-remote')
+            video_local: document.getElementById('video-local')
         };
         this.bindEvent();
         this.init();
@@ -26,16 +26,11 @@ class Page {
         const { btn_call, video_local } = this.UI;
         btn_call.addEventListener('click', e => {
             btn_call.classList.add('hide');
-            const url = 'wss://www.yonechen.com/wss/';// ws://127.0.0.1:8084
+            const url = WS_URL;// websocket url
             const user = new User(url, Date.now() + '', this.stream, this.createVideo.bind(this), this.deleteVideo.bind(this));
-            //-----
-            // const ws = new WebSocket('ws://127.0.0.1:8007');
-            // ws.addEventListener('open', e => {
-            // });
-            //-----
         });
     }
-    createVideo(token, source) {
+    createVideo(token, source) { // create a video element when user joins
         const { group } = this.UI;
         const box = document.createElement('div');
         box.classList.add('box');
@@ -54,7 +49,7 @@ class Page {
         box.appendChild(video);
         group.appendChild(box);
     }
-    deleteVideo(token) {
+    deleteVideo(token) { // delete a video element when user leaves
         const { group } = this.UI;
         const box = document.getElementById(token);
         group.removeChild(box);
@@ -101,19 +96,7 @@ class User {
     addPeer(token) {
         const { stream, userJoinCallback, userLeaveCallback } = this;
         const config = {
-            'iceServers': [{ 'url': 'stun:stun.services.mozilla.com' }, { 'url': 'stun:stunserver.org' },
-            {
-                'url': 'turn:119.29.119.131:3478?transport=tcp',
-                "username": "yonechen",
-                "credential": "yonechen",
-                credentialType: 'password'
-            },
-            {
-                'url': 'turn:119.29.119.131:3478?transport=udp',
-                "username": "yonechen",
-                "credential": "yonechen",
-                credentialType: 'password'
-            }]
+            'iceServers': [{ 'url': 'stun:stun.services.mozilla.com' }, { 'url': 'stun:stunserver.org' }]
         };
         const peer = new RTCPeerConnection(config);
         peer.addEventListener('icecandidate', e => { //在stun查询到自己的ip外网地址时，发送给 token用户
